@@ -191,6 +191,12 @@ export class Parser {
       return {kind:"draw",shape:"clear",args:[]} as any;
     }
 
+    if(w==="desenho") {
+      const shape=this.word();
+      if(shape!=="retangulo"&&shape!=="quadrado") throw this.error("Esperava retângulo ou quadrado depois de desenho.");
+      return {kind:"draw",shape,args:this.commaArgs()} as any;
+    }
+
     if(w==="desenhe") {
       if(this.checkWord("retangulo")) {
         this.advance();
