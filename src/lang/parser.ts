@@ -25,9 +25,10 @@ export class Parser {
     return { gameName: name, body } as Program;
   }
 
-  private parseBlock(end: string): Stmt[] {
+  private parseBlock(end: string | string[]): Stmt[] {
     const body: Stmt[] = [];
-    while (!this.check("EOF") && !this.checkWord(end)) {
+    const ends = Array.isArray(end) ? end : [end];
+    while (!this.check("EOF") && !ends.some(value => this.checkWord(value))) {
       if (this.match("NEWLINE")) continue;
       body.push(this.statement());
       this.skipNewlines();
@@ -67,14 +68,9 @@ export class Parser {
       throw this.error('Evento desconhecido depois de "ao".');
     }
     if (w === "se") {
-      const condition = this.expression();
-      if (!this.acceptWord("entao")) throw this.error('Faltou "então" depois da condição.');
-      this.skipLine(); const thenBranch = this.parseBlock("senao");
-      let elseBranch: Stmt[] = [];
-      if (this.acceptWord("senao")) { this.skipLine(); elseBranch = this.parseBlock("fim"); }
-      this.consumeWord("fim");
-      return { kind: "if", condition, thenBranch, elseBranch } as any;
+      return this.parseIf(true);
     }
+
     if (w === "enquanto") {
       const condition = this.expression(); this.skipLine();
       const body = this.parseBlock("fim"); this.consumeWord("fim");
@@ -137,6 +133,41 @@ export class Parser {
     }
     if (this.acceptWord("recebe") || this.acceptWord("vira")) return { kind: "assign", target, op: "=", value: this.expression() } as any;
     return { kind: "expr", expr: target } as any;
+  }
+
+  private parseIf(consumeFim: boolean): Stmt {
+    const condition = this.expression();
+
+    if (!this.acceptWord("entao")) {
+      throw this.error('Faltou "então" depois do "se".');
+    }
+
+    this.skipLine();
+
+    const thenBranch = this.parseBlock(["senao", "fim"]);
+    let elseBranch: Stmt[] = [];
+
+    if (this.acceptWord("senao")) {
+      this.skipLine();
+
+      if (this.checkWord("se")) {
+        this.advance();
+        elseBranch = [this.parseIf(false)];
+      } else {
+        elseBranch = this.parseBlock("fim");
+      }
+    }
+
+    if (consumeFim) {
+      this.consumeWord("fim");
+    }
+
+    return {
+      kind: "if",
+      condition,
+      thenBranch,
+      elseBranch
+    } as any;
   }
 
   private parseAssignableTail(first: string): Expr {
