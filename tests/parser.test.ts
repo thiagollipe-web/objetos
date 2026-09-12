@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{Parser}from"../src/lang/parser";describe("Bit parser",()=>{it("aceita jogo",()=>expect(new Parser("jogo Teste\ntela 160x120\nfim").parse().gameName).toBe("Teste"));it("aceita ator",()=>expect(new Parser("jogo T\nator a\ndesenho quadrado 8, azul\nfim\nfim").parse().gameName).toBe("T"))})
