@@ -70,7 +70,6 @@ export class Parser {
     if (w === "se") {
       return this.parseIf(true);
     }
-
     if (w === "enquanto") {
       const condition = this.expression(); this.skipLine();
       const body = this.parseBlock("fim"); this.consumeWord("fim");
@@ -148,17 +147,27 @@ export class Parser {
     let elseBranch: Stmt[] = [];
 
     if (this.acceptWord("senao")) {
-      this.skipLine();
-
+      // Support both:
+      //   senão
+      //   ...
+      // and the compact chained form:
+      //   senão se condição então
+      //
+      // The chained form belongs to the same top-level if, so it must not
+      // consume the final "fim" here.
       if (this.checkWord("se")) {
         this.advance();
         elseBranch = [this.parseIf(false)];
       } else {
+        this.skipLine();
         elseBranch = this.parseBlock("fim");
       }
     }
 
     if (consumeFim) {
+      // A chained "senão se" deliberately leaves the final fim for the
+      // outermost if. When parseIf(false) returns, the outer invocation
+      // consumes that single terminator.
       this.consumeWord("fim");
     }
 
@@ -181,7 +190,6 @@ export class Parser {
     while (!this.check("NEWLINE") && !this.check("EOF")) {
       args.push(this.expression());
       if (this.match("COMMA")) continue;
-      // Both "4, 20" and "4 x 20" are accepted for dimensions.
       if (this.checkWord("x")) { this.advance(); continue; }
       break;
     }
@@ -210,8 +218,8 @@ export class Parser {
   private literalNumber(): Expr { if (!this.check("NUMBER")) throw this.error("Esperava um número."); return { kind: "literal", value: this.advance().literal } as any; }
   private word(): string { if (!this.check("IDENT")) throw this.error("Esperava uma instrução."); return normalizeWord(this.advance().lexeme); }
   private ident(): string { if (!this.check("IDENT")) throw this.error("Esperava um nome."); return this.advance().lexeme; }
-  private consume(kind: Token["kind"], message?: string): Token { if (this.check(kind)) return this.advance(); throw this.error(message ?? `Esperava "${kind}".`); }
-  private consumeWord(word: string): void { if (!this.acceptWord(word)) throw this.error(`Esperava "${word}".`); }
+  private consume(kind: Token["kind"], message?: string): Token { if (this.check(kind)) return this.advance(); throw this.error(message ?? `Esperava "\${kind}".`); }
+  private consumeWord(word: string): void { if (!this.acceptWord(word)) throw this.error(`Esperava "\${word}".`); }
   private acceptWord(word: string): boolean { if (this.checkWord(word)) { this.advance(); return true; } return false; }
   private checkWord(word: string): boolean { return this.check("IDENT") && normalizeWord(this.peek().lexeme) === normalizeWord(word); }
   private check(kind: Token["kind"]): boolean { return this.peek().kind === kind; }
