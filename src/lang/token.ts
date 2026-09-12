@@ -1,0 +1,1 @@
+export type TokenKind="IDENT"|"NUMBER"|"STRING"|"SPRITE"|"PLUS"|"MINUS"|"STAR"|"SLASH"|"DSLASH"|"PERCENT"|"CARET"|"EQ"|"EQEQ"|"NEQ"|"LT"|"LTE"|"GT"|"GTE"|"PLUS_EQ"|"MINUS_EQ"|"AND"|"OR"|"NOT"|"LPAREN"|"RPAREN"|"LBRACK"|"RBRACK"|"COMMA"|"DOT"|"NEWLINE"|"EOF";export interface Token{kind:TokenKind;lexeme:string;literal?:unknown;line:number;column:number;endColumn:number}
