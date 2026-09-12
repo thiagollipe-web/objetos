@@ -1,1 +1,23 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000"><title>Bit</title></head><body><div id="app"></div><script type="module" src="/src/main.ts"></script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#0a0a12" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" href="/icon.svg" />
+  <link rel="apple-touch-icon" href="/icon.svg" />
+  <title>Bit — Programação em português</title>
+</head>
+<body>
+  <header class="barra"><span class="logo">Bit</span><div class="acoes"><button id="btn-exemplo" class="icone">Exemplos</button><button id="btn-executar" class="primario">▶ Rodar</button><button id="btn-parar" class="secundario" disabled>■</button></div></header>
+  <main class="palco">
+    <section class="editor-area"><div class="editor-wrap"><div class="editor-codigo"><pre id="highlight" aria-hidden="true"></pre><textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Editor de código Bit"></textarea></div></div></section>
+    <section class="canvas-area"><div class="canvas-wrap"><canvas id="tela" width="160" height="120"></canvas><div class="controles"><div class="dpad"><button data-tecla="cima" class="dir up">▲</button><button data-tecla="esquerda" class="dir left">◀</button><button data-tecla="direita" class="dir right">▶</button><button data-tecla="baixo" class="dir down">▼</button></div><div class="botoes-ab"><button data-tecla="espaco" class="botao-a">A</button><button data-tecla="B" class="botao-b">B</button></div></div></div><div id="status" class="status">Pronto.</div></section>
+  </main>
+  <nav class="teclado-assistido"><button data-snippet="se  então&#10;    &#10;fim">se</button><button data-snippet="enquanto  &#10;    &#10;fim">enquanto</button><button data-snippet="repita 3 vezes&#10;    &#10;fim">repita</button><button data-snippet="para cada x em [1, 2, 3]&#10;    &#10;fim">para cada</button><button data-snippet="ator nome&#10;    desenho quadrado 8, branco&#10;    posição 80, 60&#10;fim">ator</button><button data-snippet="ao atualizar&#10;    &#10;fim">atualizar</button><button data-snippet="ao desenhar&#10;    limpe&#10;    &#10;fim">desenhar</button><button data-snippet="diga ">diga</button><button data-snippet="colide(a, b)">colide</button><button data-snippet="tecla(&quot;esquerda&quot;)">tecla</button><button data-snippet="efeito &quot;moeda&quot;">efeito</button><button data-snippet="aleatorio(1, 10)">aleatorio</button></nav>
+  <div id="modal" class="modal"><div class="modal-caixa"><h2>Escolha um exemplo</h2><div id="lista-exemplos"></div></div></div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
