@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bit</title>
+<script>
+(function(){
+  var path=window.location.pathname;
+  var base="/objetos/";
+  if(path.indexOf(base)===0){
+    var target=base+"?p="+encodeURIComponent(path.slice(base.length));
+    window.location.replace(target);
+  }
+})();
+</script>
+</head>
+<body>
+<p>Carregando Bit…</p>
+</body>
+</html>
