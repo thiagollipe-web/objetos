@@ -1,0 +1,1 @@
+import{describe,it,expect}from"vitest";import{intersects}from"../src/runtime/collision";describe("Bit runtime",()=>{it("detecta AABB",()=>{expect(intersects({x:0,y:0,width:10,height:10},{x:5,y:5,width:10,height:10})).toBe(true);expect(intersects({x:0,y:0,width:10,height:10},{x:20,y:20,width:2,height:2})).toBe(false)})})
