@@ -1,1 +1,4 @@
-import{describe,it,expect}from"vitest";import{Parser}from"../src/lang/parser";describe("Bit parser",()=>{it("aceita jogo",()=>expect(new Parser("jogo Teste\ntela 160x120\nfim").parse().gameName).toBe("Teste"));it("aceita ator",()=>expect(new Parser("jogo T\nator a\ndesenho quadrado 8, azul\nfim\nfim").parse().gameName).toBe("T"))})
+import{describe,it,expect}from"vitest";import{Parser}from"../src/lang/parser";describe("Bit parser",()=>{it("aceita jogo",()=>expect(new Parser("jogo Teste\ntela 160x120\nfim").parse().gameName).toBe("Teste"));it("aceita ator",()=>expect(new Parser("jogo T\nator a\ndesenho quadrado 8, azul\nfim\nfim").parse().gameName).toBe("T"));
+it("aceita dimensão sem espaços",()=>expect(new Parser("jogo T\ntela 160x120\nfim").parse().gameName).toBe("T"));
+it("aceita dimensão com x separado",()=>expect(new Parser("jogo T\nator a\ndesenho retângulo 4 x 20, branco\nfim\nfim").parse().gameName).toBe("T"));
+it("aceita senão se com um único fim",()=>expect(()=>new Parser("jogo T\nao atualizar\nse x < 1 então\ndiga \"A\"\nsenão se x < 2 então\ndiga \"B\"\nsenão\ndiga \"C\"\nfim\nfim").parse()).not.toThrow())})
