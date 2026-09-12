@@ -2,6 +2,9 @@ import type { RuntimeGame } from "../runtime/game";
 
 type Builtin = (args: unknown[]) => unknown;
 
+const key = (name: string) =>
+  name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
 export function createBuiltins(game: RuntimeGame): Map<string, Builtin> {
   const builtins: Array<[string, Builtin]> = [
     ["aleatorio", ([min, max]: unknown[]) => {
@@ -13,9 +16,9 @@ export function createBuiltins(game: RuntimeGame): Map<string, Builtin> {
     }],
     ["colide", ([a, b]: unknown[]) => game.collides(String(a), String(b))],
     ["distancia", ([a, b]: unknown[]) => game.distance(String(a), String(b))],
-    ["tecla", ([key]: unknown[]) => game.keyDown(String(key))],
-    ["toque", ([key]: unknown[]) => game.wasPressed(String(key))],
+    ["tecla", ([keyName]: unknown[]) => game.keyDown(String(keyName))],
+    ["toque", ([keyName]: unknown[]) => game.wasPressed(String(keyName))],
   ];
 
-  return new Map<string, Builtin>(builtins);
+  return new Map(builtins.map(([name, fn]) => [key(name), fn]));
 }
