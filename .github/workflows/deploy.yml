@@ -1,9 +1,8 @@
-name: Publicar Bit Web
+name: Bit RC1 - Teste e Publicação
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -12,40 +11,58 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: bit-pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  quality:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Baixar código
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configurar Node
+      - name: Node.js 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Instalar dependências
-        run: npm ci
+      - name: npm install
+        run: npm install
 
-      - name: Testar
+      - name: Verificar estrutura
+        run: node scripts/verify-bit.mjs
+
+      - name: npm test
         run: npm test
 
-      - name: Gerar produção
+      - name: npm run build
         run: npm run build
+
+      - name: Medir dist
+        run: |
+          SIZE=$(du -sk dist | cut -f1)
+          echo "dist: ${SIZE} KB"
+          if [ "${SIZE}" -gt 300 ]; then
+            echo "Bundle excede 300 KB."
+            exit 1
+          fi
 
       - name: Configurar Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload do site
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
-      - name: Publicar
-        id: deployment
+  deploy:
+    needs: quality
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: https://thiagollipe-web.github.io/objetos/
+
+    steps:
+      - name: Publicar no GitHub Pages
         uses: actions/deploy-pages@v4
