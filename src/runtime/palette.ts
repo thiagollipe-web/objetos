@@ -1,0 +1,3 @@
+export const PALETTE:Record<string,string>={preto:"#000",branco:"#fff",cinza:"#777",vermelho:"#f33",laranja:"#f80",amarelo:"#fd3",verde:"#3c5",ciano:"#2dd",azul:"#35f",roxo:"#93f",rosa:"#f5a",marrom:"#854",bege:"#edc",verde_claro:"#8f6",azul_claro:"#7cf",transparente:"transparent"};
+const NUM:Record<string,string>={0:"preto",1:"branco",2:"cinza",3:"vermelho",4:"laranja",5:"amarelo",6:"verde",7:"ciano",8:"azul",9:"roxo",a:"rosa",b:"marrom",c:"bege",d:"verde_claro",e:"azul_claro",f:"transparente"};
+export function color(v:unknown){const k=String(v??"preto").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/-/g,"_");return PALETTE[k]??PALETTE[NUM[k]??"preto"];}
